@@ -21,7 +21,9 @@ class CompaniesController: UITableViewController {
         super.viewDidLoad()
         view.backgroundColor = .white
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "plus") .withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleAddCompany))
-        setupNavigationStyle()
+        navigationItem.title = "Companies"
+        
+//        setupNavigationStyle()
         tableView.backgroundColor = UIColor.darkBlue
 //        tableView.separatorStyle = .none
         tableView.separatorColor = UIColor.white
@@ -32,17 +34,16 @@ class CompaniesController: UITableViewController {
     @objc func handleAddCompany() {
         print("Add button pressed")
         
-        let createCompanyController = UIViewController()
-        createCompanyController.view.backgroundColor = .green
-        let navController = UINavigationController(rootViewController: createCompanyController)
+        let createCompanyController = CreateCompanyController()
+        let navController = CustomNavigationController(rootViewController: createCompanyController)
         
         present(navController, animated: true, completion: nil)
     }
     
     func setupNavigationStyle() {
         navigationController?.navigationBar.isTranslucent = false
-        navigationController?.navigationBar.barTintColor = UIColor.semiDarkRed
-        navigationItem.title = "Companies"
+        navigationController?.navigationBar.barTintColor = UIColor.lightRed
+        
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedStringKey.foregroundColor : UIColor.white]
         navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor : UIColor.white]
