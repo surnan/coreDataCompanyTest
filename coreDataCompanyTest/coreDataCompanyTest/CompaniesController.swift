@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  CompaniesController.swift
 //  coreDataCompanyTest
 //
 //  Created by admin on 2/8/18.
