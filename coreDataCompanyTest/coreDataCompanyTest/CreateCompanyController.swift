@@ -8,7 +8,19 @@
 
 import UIKit
 
+//Custom Delegation
+protocol CreateCompanyControllerDelegate {
+    func didAddCompany(company: Company)
+}
+
+
 class CreateCompanyController: UIViewController {
+    
+    
+    var delegate: CreateCompanyControllerDelegate?
+//    var companiesController: CompaniesController?
+    
+    
     
     let nameLabel: UILabel = {
         let label = UILabel()
@@ -37,12 +49,14 @@ class CreateCompanyController: UIViewController {
     
     @objc private func handleSave(){
         print("trying to save company")
-        
-        guard let name = nameTextField.text else { return }
-        let company = Company(name: name, founded: Date())
-        
-        dismiss(animated: true, completion: nil)
+        dismiss(animated: true) {
+            guard let name = self.nameTextField.text else { return }
+            let company = Company(name: name, founded: Date())
+//            self.companiesController?.addCompany(company: company)
+            self.delegate?.didAddCompany(company: company)
+        }
     }
+    
     @objc private func handleCancel() {
         dismiss(animated: true, completion: nil)
     }
