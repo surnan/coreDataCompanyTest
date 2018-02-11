@@ -11,7 +11,7 @@ import CoreData
 
 //Custom Delegation
 protocol CreateCompanyControllerDelegate {
- func didAddCompany(company: Company)
+    func didAddCompany(company: Company)
 }
 
 
@@ -19,9 +19,6 @@ class CreateCompanyController: UIViewController {
     
     
     var delegate: CreateCompanyControllerDelegate?
-//    var companiesController: CompaniesController?
-    
-    
     
     let nameLabel: UILabel = {
         let label = UILabel()
@@ -50,41 +47,26 @@ class CreateCompanyController: UIViewController {
     
     @objc private func handleSave(){
         print("trying to save company")
-        
-        let persistentContainer = NSPersistentContainer(name: "IntermediateTrainingModel")
-        persistentContainer.loadPersistentStores { (storeDescription, err) in
-            if let err = err {
-                fatalError("Loading of store failed:\(err)")
-            }
-        }
-        
-        //When you "insertObject", you're not saving.  You're only putting it into a context so it can be saved later on
-        let context = persistentContainer.viewContext
+
+        let context = CoreDataManager.shared.persistentContainer.viewContext
         let company = NSEntityDescription.insertNewObject(forEntityName: "Company", into: context)
         
         company.setValue(nameTextField.text, forKey: "name")
-        
         do {
             try context.save()  //<--- That's the actual save
+            dismiss(animated: true, completion: {
+                self.delegate?.didAddCompany(company: company as! Company)
+            })
         } catch let saveErr {
             print("Failed to save company: ", saveErr)
         }
-        
-        //        dismiss(animated: true) {
-//            guard let name = self.nameTextField.text else { return }
-//            let company = Company(name: name, founded: Date())
-////            self.companiesController?.addCompany(company: company)
-//            self.delegate?.didAddCompany(company: company)
-//        }
     }
     
     @objc private func handleCancel() {
         dismiss(animated: true, completion: nil)
     }
     
-    
     private func setupUI(){
-
         let lightBlueBackgroundView = UIView()
         lightBlueBackgroundView.backgroundColor = UIColor.lightBlue
         lightBlueBackgroundView.translatesAutoresizingMaskIntoConstraints = false
@@ -93,7 +75,6 @@ class CreateCompanyController: UIViewController {
         lightBlueBackgroundView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         lightBlueBackgroundView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         lightBlueBackgroundView.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        
         
         view.addSubview(nameLabel)
         nameLabel.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
