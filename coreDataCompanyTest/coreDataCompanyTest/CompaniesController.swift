@@ -7,33 +7,65 @@
 //
 
 import UIKit
+import CoreData
 
 class CompaniesController: UITableViewController, CreateCompanyControllerDelegate {
     func didAddCompany(company: Company) {
-        let newCompany = Company(name: company.name, founded: Date())
-        companies.append(newCompany)
-        
-        
-        let newIndexPath = IndexPath(row: companies.count - 1, section: 0)
-        tableView.insertRows(at: [newIndexPath], with: .automatic)
+//        let newCompany = Company(name: company.name, founded: Date())
+//        companies.append(newCompany)
+//
+//
+//        let newIndexPath = IndexPath(row: companies.count - 1, section: 0)
+//        tableView.insertRows(at: [newIndexPath], with: .automatic)
     }
     
 
-    var companies = [
-                Company(name: "Apple", founded: Date()),
-                Company(name: "Google", founded: Date()),
-                Company(name: "Facebook", founded: Date())
-    ]
+    
+    
+    var companies = [Company]()
+    
+//    var companies = [
+//                Company(name: "Apple", founded: Date()),
+//                Company(name: "Google", founded: Date()),
+//                Company(name: "Facebook", founded: Date())
+//    ]
     
     func addCompany(company: Company) {
-        let newCompany = Company(name: company.name, founded: Date())
-        companies.append(newCompany)
-        let newIndexPath = IndexPath(row: companies.count - 1, section: 0)
-        tableView.insertRows(at: [newIndexPath], with: .automatic)
+//        let newCompany = Company(name: company.name, founded: Date())
+//        companies.append(newCompany)
+//        let newIndexPath = IndexPath(row: companies.count - 1, section: 0)
+//        tableView.insertRows(at: [newIndexPath], with: .automatic)
+    }
+    
+    
+    private func fetchCompanies(){
+        let persistentContainer = NSPersistentContainer(name: "IntermediateTrainingModel")
+        persistentContainer.loadPersistentStores { (storeDescription, err) in
+            if let err = err {
+                fatalError("Loading of store failed:\(err)")
+            }
+        }
+        
+        //When you "insertObject", you're not saving.  You're only putting it into a context so it can be saved later on
+        let context = persistentContainer.viewContext
+        
+        let fetchRequest = NSFetchRequest<Company>(entityName: "Company")
+        
+        do {
+            let companies = try context.fetch(fetchRequest)
+            companies.forEach({ (company) in
+                print(company.name ?? "")
+            })
+        } catch let fetchErr {
+            print("Failed to fetch companies: ", fetchErr)
+        }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        fetchCompanies()
+        
        view.backgroundColor = .white
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "plus") .withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleAddCompany))
         navigationItem.title = "Companies"

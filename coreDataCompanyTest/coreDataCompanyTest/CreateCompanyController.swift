@@ -7,10 +7,11 @@
 //
 
 import UIKit
+import CoreData
 
 //Custom Delegation
 protocol CreateCompanyControllerDelegate {
-    func didAddCompany(company: Company)
+ func didAddCompany(company: Company)
 }
 
 
@@ -49,12 +50,32 @@ class CreateCompanyController: UIViewController {
     
     @objc private func handleSave(){
         print("trying to save company")
-        dismiss(animated: true) {
-            guard let name = self.nameTextField.text else { return }
-            let company = Company(name: name, founded: Date())
-//            self.companiesController?.addCompany(company: company)
-            self.delegate?.didAddCompany(company: company)
+        
+        let persistentContainer = NSPersistentContainer(name: "IntermediateTrainingModel")
+        persistentContainer.loadPersistentStores { (storeDescription, err) in
+            if let err = err {
+                fatalError("Loading of store failed:\(err)")
+            }
         }
+        
+        //When you "insertObject", you're not saving.  You're only putting it into a context so it can be saved later on
+        let context = persistentContainer.viewContext
+        let company = NSEntityDescription.insertNewObject(forEntityName: "Company", into: context)
+        
+        company.setValue(nameTextField.text, forKey: "name")
+        
+        do {
+            try context.save()  //<--- That's the actual save
+        } catch let saveErr {
+            print("Failed to save company: ", saveErr)
+        }
+        
+        //        dismiss(animated: true) {
+//            guard let name = self.nameTextField.text else { return }
+//            let company = Company(name: name, founded: Date())
+////            self.companiesController?.addCompany(company: company)
+//            self.delegate?.didAddCompany(company: company)
+//        }
     }
     
     @objc private func handleCancel() {

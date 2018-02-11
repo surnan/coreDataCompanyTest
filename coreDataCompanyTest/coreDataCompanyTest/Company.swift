@@ -6,12 +6,12 @@
 //  Copyright © 2018 admin. All rights reserved.
 //
 
-import Foundation
-
-struct Company {
-    let name: String
-    let founded: Date
-}
+//import Foundation
+//
+//struct Company {
+//    let name: String
+//    let founded: Date
+//}
 
 
 

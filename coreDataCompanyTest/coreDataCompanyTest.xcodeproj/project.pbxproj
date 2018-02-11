@@ -14,6 +14,7 @@
 		84AD0760202D4632007A1AC9 /* CompaniesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84AD075F202D4632007A1AC9 /* CompaniesController.swift */; };
 		84AD0765202D4632007A1AC9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 84AD0764202D4632007A1AC9 /* Assets.xcassets */; };
 		84AD0768202D4632007A1AC9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 84AD0766202D4632007A1AC9 /* LaunchScreen.storyboard */; };
+		84BD762F20309B6D00E09285 /* IntermediateTrainingModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 84BD762D20309B6D00E09285 /* IntermediateTrainingModel.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		84AD0764202D4632007A1AC9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		84AD0767202D4632007A1AC9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		84AD0769202D4632007A1AC9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		84BD762E20309B6D00E09285 /* IntermediateTrainingModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = IntermediateTrainingModel.xcdatamodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,6 +68,7 @@
 				84AD0769202D4632007A1AC9 /* Info.plist */,
 				84536813202DB84100996593 /* UIColor+theme.swift */,
 				84536815202E472A00996593 /* Company.swift */,
+				84BD762D20309B6D00E09285 /* IntermediateTrainingModel.xcdatamodeld */,
 			);
 			path = coreDataCompanyTest;
 			sourceTree = "<group>";
@@ -143,6 +146,7 @@
 			files = (
 				84536814202DB84100996593 /* UIColor+theme.swift in Sources */,
 				84AD0760202D4632007A1AC9 /* CompaniesController.swift in Sources */,
+				84BD762F20309B6D00E09285 /* IntermediateTrainingModel.xcdatamodeld in Sources */,
 				84602943202EF4FA00B02D77 /* CreateCompanyController.swift in Sources */,
 				84AD075E202D4632007A1AC9 /* AppDelegate.swift in Sources */,
 				84536816202E472A00996593 /* Company.swift in Sources */,
@@ -322,6 +326,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		84BD762D20309B6D00E09285 /* IntermediateTrainingModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				84BD762E20309B6D00E09285 /* IntermediateTrainingModel.xcdatamodel */,
+			);
+			currentVersion = 84BD762E20309B6D00E09285 /* IntermediateTrainingModel.xcdatamodel */;
+			path = IntermediateTrainingModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 84AD0752202D4632007A1AC9 /* Project object */;
 }
