@@ -16,6 +16,17 @@ class CompaniesController: UITableViewController, CreateCompanyControllerDelegat
         tableView.insertRows(at: [newIndexPath], with: .automatic)
     }
     
+    func didEditCompany(company: Company) {
+        print("EDITING COMPANY")
+         print("EDITING COMPANY")
+         print("EDITING COMPANY")
+         print("EDITING COMPANY")
+        
+        let row = companies.index(of: company)
+        let reloadIndexPath = IndexPath(row: row!, section: 0)
+            
+        tableView.reloadRows(at: [reloadIndexPath], with: .middle)
+    }
     
     
     
@@ -108,13 +119,25 @@ class CompaniesController: UITableViewController, CreateCompanyControllerDelegat
                 print("Failed to delete company: ", saveErr)
             }
         }
-            let editAction = UITableViewRowAction(style: .normal, title: "Edit") { (_, indexPath) in
-                let company = self.companies[indexPath.row]
-                print("Editing company: ")
-            }
-            
-            
-            return [deleteAction, editAction]
-        }
-}
+        
+        let editAction = UITableViewRowAction(style: .normal, title: "Edit", handler: editHandlerFunction)
+        print("Editing company: ")
+        return [deleteAction, editAction]
+    }
+    
+    private func editHandlerFunction(action: UITableViewRowAction, indexPath: IndexPath) {
+        print("Editing company in separate function")
+        
+        let editCompanyController = CreateCompanyController()
+        editCompanyController.delegate = self   //<--- missing that line has caused me LOTS LOTS LOTS of pain
+                                            // (os/kern) invalid capability (0x14) "Unable to insert COPY_SEND"
 
+        
+        //Below is changing values in the VC before it loads.  So although we're calling 'CreateCompanyController'
+        //it still looks customized for the current situation
+        editCompanyController.company = companies[indexPath.row]
+        
+        let navController = CustomNavigationController(rootViewController: editCompanyController)
+        present(navController, animated: true, completion: nil)
+    }
+}
