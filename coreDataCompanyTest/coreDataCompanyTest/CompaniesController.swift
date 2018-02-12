@@ -84,9 +84,36 @@ class CompaniesController: UITableViewController, CreateCompanyControllerDelegat
         let cell = tableView.dequeueReusableCell(withIdentifier: "cellID", for: indexPath)
         cell.backgroundColor = UIColor.teal
         let company = companies[indexPath.row]
-        cell.textLabel?.text = company.name
+        
+        if let name = company.name, let founded = company.founded {
+ 
+            // One way to show date
+//            let locale = Locale(identifier: "EN")
+//            let dateString = "\(name) - Founded: \(founded.description(with: locale))"
+            
+            //MMM dd, YYYY
+            let dateFormatter = DateFormatter()
+            
+//            dateFormatter.dateFormat = "MMM dd, yyyy hh:mm:ss" // <-- Will show hour, minute, seconds also
+            dateFormatter.dateFormat = "MMM dd, yyyy"  //first 3 letters of month date, 4-digit year
+            let foundedDateString = dateFormatter.string(from: founded)
+            
+            let dateString = "\(name) - Founded: \(foundedDateString)"
+            
+            
+            
+            cell.textLabel?.text = dateString
+        } else {
+            cell.textLabel?.text = company.name
+        }
+        
+        
+//        cell.textLabel?.text = "\(company.name) - Founded: \(company.founded)"
         cell.textLabel?.textColor = UIColor.white
         cell.textLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+        
+        
+        
         return cell
     }
     

@@ -24,6 +24,9 @@ class CreateCompanyController: UIViewController {
                             //'handleAddCompany' created 'CreateCompanyController' but doesn't define 'Company?'
         didSet {
             nameTextField.text = company?.name
+            
+            guard let founded = company?.founded else {return}
+            datePicker.date = founded
         }
     }
     
@@ -45,7 +48,12 @@ class CreateCompanyController: UIViewController {
         return textField
     }()
     
-    
+    let datePicker: UIDatePicker = {
+        let dp = UIDatePicker()
+        dp.datePickerMode = .date
+        dp.translatesAutoresizingMaskIntoConstraints = false
+        return dp
+    }()
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -75,6 +83,7 @@ class CreateCompanyController: UIViewController {
     private func saveCompanyChanges(){
         let context = CoreDataManager.shared.persistentContainer.viewContext
         company?.name = nameTextField.text //company = 'Company type' -> coreData object.  Edit here then 'context.save()' below
+        company?.founded = datePicker.date
 
         do {
             try context.save()
@@ -96,7 +105,10 @@ class CreateCompanyController: UIViewController {
         let context = CoreDataManager.shared.persistentContainer.viewContext
         let company = NSEntityDescription.insertNewObject(forEntityName: "Company", into: context)
         
-        company.setValue(nameTextField.text, forKey: "name")
+        company.setValue(nameTextField.text, forKey: "name")  //set is needed for creating value
+        company.setValue(datePicker.date, forKey: "founded")  //after it exists, you can access it as a regular property
+        
+        
         do {
             try context.save()  //<--- That's the actual save
             dismiss(animated: true, completion: {
@@ -122,7 +134,7 @@ class CreateCompanyController: UIViewController {
         lightBlueBackgroundView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         lightBlueBackgroundView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         lightBlueBackgroundView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-        lightBlueBackgroundView.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        lightBlueBackgroundView.heightAnchor.constraint(equalToConstant: 250).isActive = true
         
         view.addSubview(nameLabel)
         nameLabel.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
@@ -135,6 +147,18 @@ class CreateCompanyController: UIViewController {
         nameTextField.leftAnchor.constraint(equalTo: nameLabel.rightAnchor).isActive = true
         nameTextField.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         nameTextField.bottomAnchor.constraint(equalTo: nameLabel.bottomAnchor).isActive = true
+        
+        
+        view.addSubview(datePicker)
+        datePicker.topAnchor.constraint(equalTo: nameLabel.bottomAnchor).isActive = true
+        datePicker.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        datePicker.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+        datePicker.bottomAnchor.constraint(equalTo: lightBlueBackgroundView.bottomAnchor).isActive = true
+        
+        
+        
+        
+        
     }
 
 }
