@@ -18,23 +18,19 @@ class CompaniesController: UITableViewController, CreateCompanyControllerDelegat
     
     func didEditCompany(company: Company) {
         print("EDITING COMPANY")
-         print("EDITING COMPANY")
-         print("EDITING COMPANY")
-         print("EDITING COMPANY")
+        print("EDITING COMPANY")
+        print("EDITING COMPANY")
+        print("EDITING COMPANY")
         
         let row = companies.index(of: company)
         let reloadIndexPath = IndexPath(row: row!, section: 0)
-            
         tableView.reloadRows(at: [reloadIndexPath], with: .middle)
     }
-    
-    
     
     var companies = [Company]()
     
     private func fetchCompanies(){
         let context = CoreDataManager.shared.persistentContainer.viewContext
-        
         let fetchRequest = NSFetchRequest<Company>(entityName: "Company")
         do {
             let companies = try context.fetch(fetchRequest)
@@ -84,36 +80,26 @@ class CompaniesController: UITableViewController, CreateCompanyControllerDelegat
         let cell = tableView.dequeueReusableCell(withIdentifier: "cellID", for: indexPath)
         cell.backgroundColor = UIColor.teal
         let company = companies[indexPath.row]
-        
         if let name = company.name, let founded = company.founded {
- 
+            
             // One way to show date
-//            let locale = Locale(identifier: "EN")
-//            let dateString = "\(name) - Founded: \(founded.description(with: locale))"
+            //            let locale = Locale(identifier: "EN")
+            //            let dateString = "\(name) - Founded: \(founded.description(with: locale))"
             
             //MMM dd, YYYY
             let dateFormatter = DateFormatter()
-            
-//            dateFormatter.dateFormat = "MMM dd, yyyy hh:mm:ss" // <-- Will show hour, minute, seconds also
+            //            dateFormatter.dateFormat = "MMM dd, yyyy hh:mm:ss" // <-- Will show hour, minute, seconds also
             dateFormatter.dateFormat = "MMM dd, yyyy"  //first 3 letters of month date, 4-digit year
             let foundedDateString = dateFormatter.string(from: founded)
-            
             let dateString = "\(name) - Founded: \(foundedDateString)"
-            
-            
-            
             cell.textLabel?.text = dateString
         } else {
             cell.textLabel?.text = company.name
         }
         
-        
-//        cell.textLabel?.text = "\(company.name) - Founded: \(company.founded)"
+        //        cell.textLabel?.text = "\(company.name) - Founded: \(company.founded)"
         cell.textLabel?.textColor = UIColor.white
         cell.textLabel?.font = UIFont.boldSystemFont(ofSize: 16)
-        
-        
-        
         return cell
     }
     
@@ -128,18 +114,13 @@ class CompaniesController: UITableViewController, CreateCompanyControllerDelegat
     }
     
     override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-        
         let deleteAction = UITableViewRowAction(style: .destructive, title: "Delete") { (_, indexPath) in
             let company = self.companies[indexPath.row]
             print("Attempting to delete company: ", company.name ?? "")
-            
             self.companies.remove(at: indexPath.row)   //array that populates tableView //<-- without this, it crashes on next line
             self.tableView.deleteRows(at: [indexPath], with: .fade)
-            
             let context = CoreDataManager.shared.persistentContainer.viewContext
             context.delete(company)
-            
-            
             do {
                 try context.save()
             } catch let saveErr {
@@ -157,8 +138,7 @@ class CompaniesController: UITableViewController, CreateCompanyControllerDelegat
         
         let editCompanyController = CreateCompanyController()
         editCompanyController.delegate = self   //<--- missing that line has caused me LOTS LOTS LOTS of pain
-                                            // (os/kern) invalid capability (0x14) "Unable to insert COPY_SEND"
-
+        // (os/kern) invalid capability (0x14) "Unable to insert COPY_SEND"
         
         //Below is changing values in the VC before it loads.  So although we're calling 'CreateCompanyController'
         //it still looks customized for the current situation

@@ -8,11 +8,20 @@
 
 import UIKit
 
+//Overriding this value within code does not change color of clock & wifi-signal & battery icon
 class CustomNavigationController: UINavigationController {
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
 }
+
+//Navigation Controller is a part of UIImagepicker.  This lets us change top icon bar when UIImagepicker is live (tap to load it)
+extension UINavigationController {
+    override open var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+}
+
 
 
 
