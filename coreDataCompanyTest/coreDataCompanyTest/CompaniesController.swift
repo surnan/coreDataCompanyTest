@@ -48,6 +48,9 @@ class CompaniesController: UITableViewController, CreateCompanyControllerDelegat
     override func viewDidLoad() {
         super.viewDidLoad()
         fetchCompanies()
+        
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Reset", style: .plain, target: self, action: #selector(handleReset))
+        
         view.backgroundColor = .white
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "plus") .withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleAddCompany))
         navigationItem.title = "Companies"
@@ -55,6 +58,40 @@ class CompaniesController: UITableViewController, CreateCompanyControllerDelegat
         tableView.separatorColor = UIColor.white
         tableView.tableFooterView = UIView()  // footer = blank, won't get mulitple separator lines after final row
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cellID")
+    }
+    
+    @objc private func handleReset(){
+        print("Attempting to delete all core data objects")
+        
+
+         let context = CoreDataManager.shared.persistentContainer.viewContext
+
+//         It works but you can't do any animation with it.
+//         companies.forEach { (company) in
+//         context.delete(company)
+//         }
+
+        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: Company.fetchRequest())
+        do {
+            try context.execute(batchDeleteRequest)
+            
+            var indexPathsToRemove = [IndexPath]()
+            
+            //companies.forEach() //doesn't return the row #, if you "companies.index(of:" then you gotta unwrap optional
+            
+            for (index, _ ) in companies.enumerated() {
+                let indexPath = IndexPath(row: index, section: 0)
+                indexPathsToRemove.append(indexPath)
+            }
+            
+            companies.removeAll()
+            tableView.deleteRows(at: indexPathsToRemove, with: .fade)
+            
+//            companies.removeAll()  //<-- remove all entries from arry
+//            tableView.reloadData()
+        } catch let delErr{
+            print("Failed to delete objects from Core Data: ", delErr)
+        }
     }
     
     @objc func handleAddCompany() {
@@ -71,6 +108,20 @@ class CompaniesController: UITableViewController, CreateCompanyControllerDelegat
         navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedStringKey.foregroundColor : UIColor.white]
         navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor : UIColor.white]
     }
+    
+    override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        let label = UILabel()
+        label.text = "No companies available...."
+        label.textColor = UIColor.white
+        label.textAlignment = .center
+        label.font = UIFont.boldSystemFont(ofSize: 16)
+        return label
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return companies.count == 0 ? 150 : 0   //If the count != 0, then this height is zero.
+    }
+    
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return companies.count
