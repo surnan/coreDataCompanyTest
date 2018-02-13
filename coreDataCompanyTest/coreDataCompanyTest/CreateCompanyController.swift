@@ -25,6 +25,11 @@ class CreateCompanyController: UIViewController, UINavigationControllerDelegate,
         didSet {
             nameTextField.text = company?.name
             
+            if let imageData = company?.imageData {
+                companyImageView.image = UIImage(data: imageData)
+                setupCircularStyle()
+            }
+            
             guard let founded = company?.founded else {return}
             datePicker.date = founded
         }
@@ -37,6 +42,7 @@ class CreateCompanyController: UIViewController, UINavigationControllerDelegate,
         //so it won't fire.  Make it lazy, and by the time this fires, self has been defined.  So it can now be active when app runs
         let imageView = UIImageView(image: #imageLiteral(resourceName: "select_photo_empty"))
         imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.contentMode = .scaleToFill
         imageView.isUserInteractionEnabled = true  //not good enough by itself.  You'll need gesture recognizer
         imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleSelectPhoto)))
         return imageView
@@ -52,14 +58,14 @@ class CreateCompanyController: UIViewController, UINavigationControllerDelegate,
     
     //fires when we pick a photo
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-        print(info)
-        
-        
         if let editedImage = info[UIImagePickerControllerEditedImage] as? UIImage {
             companyImageView.image = editedImage  //if the image is cropped or moved by user
         } else if let originalImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
             companyImageView.image = originalImage //if user does nothing after selecting photo
         }
+        
+        setupCircularStyle()
+        
         dismiss(animated: true, completion: nil)
     }
     
@@ -111,6 +117,14 @@ class CreateCompanyController: UIViewController, UINavigationControllerDelegate,
         let context = CoreDataManager.shared.persistentContainer.viewContext
         company?.name = nameTextField.text //company = 'Company type' -> coreData object.  Edit here then 'context.save()' below
         company?.founded = datePicker.date
+        
+        if let companyImage = companyImageView.image {
+            let imageData = UIImageJPEGRepresentation(companyImage, 0.8)
+//            company?.setValue(imageData, forKey: "imageData")
+            company?.imageData = imageData  // you don't need line above.   Like in Create Company.  Because it already exists.
+            
+        }
+        
         do {
             try context.save()
             dismiss(animated: true, completion: {
@@ -121,13 +135,19 @@ class CreateCompanyController: UIViewController, UINavigationControllerDelegate,
         }
     }
     
-
+    
     private func createCompany() {
         print("trying to save company")
         let context = CoreDataManager.shared.persistentContainer.viewContext
         let company = NSEntityDescription.insertNewObject(forEntityName: "Company", into: context)
         company.setValue(nameTextField.text, forKey: "name")  //set is needed for creating value
         company.setValue(datePicker.date, forKey: "founded")  //after it exists, you can access it as a regular property
+        
+        if let companyImage = companyImageView.image {
+            let imageData = UIImageJPEGRepresentation(companyImage, 0.8)
+            company.setValue(imageData, forKey: "imageData")
+        }
+        
         do {
             try context.save()  //<--- That's the actual save
             dismiss(animated: true, completion: {
@@ -138,6 +158,14 @@ class CreateCompanyController: UIViewController, UINavigationControllerDelegate,
         }
     }
     
+    private func setupCircularStyle(){
+        //Two lines below convert default rectangular/sqare pics --> circle shaped
+        companyImageView.layer.cornerRadius = companyImageView.frame.width / 2
+        companyImageView.clipsToBounds = true
+        //Two lines below for border width
+        companyImageView.layer.borderColor = UIColor.darkBlue.cgColor
+        companyImageView.layer.borderWidth = 2
+    }
     
     @objc private func handleCancel() {
         dismiss(animated: true, completion: nil)
