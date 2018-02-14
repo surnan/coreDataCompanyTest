@@ -10,6 +10,9 @@ import UIKit
 import CoreData
 
 class CompaniesController: UITableViewController, CreateCompanyControllerDelegate {
+    
+    var companies = [Company]()
+    
     func didAddCompany(company: Company) {
         companies.append(company)
         let newIndexPath = IndexPath(row: companies.count - 1, section: 0)
@@ -18,25 +21,19 @@ class CompaniesController: UITableViewController, CreateCompanyControllerDelegat
     
     func didEditCompany(company: Company) {
         print("EDITING COMPANY")
-        print("EDITING COMPANY")
-        print("EDITING COMPANY")
-        print("EDITING COMPANY")
-        
         let row = companies.index(of: company)
         let reloadIndexPath = IndexPath(row: row!, section: 0)
         tableView.reloadRows(at: [reloadIndexPath], with: .middle)
     }
-    
-    var companies = [Company]()
     
     private func fetchCompanies(){
         let context = CoreDataManager.shared.persistentContainer.viewContext
         let fetchRequest = NSFetchRequest<Company>(entityName: "Company")
         do {
             let companies = try context.fetch(fetchRequest)
-            companies.forEach({ (company) in
-                print(company.name ?? "")
-            })
+//            companies.forEach({ (company) in
+//                print(company.name ?? "")
+//            })
             self.companies = companies
             self.tableView.reloadData()
         } catch let fetchErr {
@@ -48,9 +45,7 @@ class CompaniesController: UITableViewController, CreateCompanyControllerDelegat
     override func viewDidLoad() {
         super.viewDidLoad()
         fetchCompanies()
-        
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Reset", style: .plain, target: self, action: #selector(handleReset))
-        
         view.backgroundColor = .white
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "plus") .withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleAddCompany))
         navigationItem.title = "Companies"
@@ -62,33 +57,24 @@ class CompaniesController: UITableViewController, CreateCompanyControllerDelegat
     
     @objc private func handleReset(){
         print("Attempting to delete all core data objects")
-        
-
-         let context = CoreDataManager.shared.persistentContainer.viewContext
-
-//         It works but you can't do any animation with it.
-//         companies.forEach { (company) in
-//         context.delete(company)
-//         }
-
+        let context = CoreDataManager.shared.persistentContainer.viewContext
+        //         It works but you can't do any animation with it.
+        //         companies.forEach { (company) in
+        //         context.delete(company)
+        //         }
         let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: Company.fetchRequest())
         do {
             try context.execute(batchDeleteRequest)
-            
             var indexPathsToRemove = [IndexPath]()
-            
             //companies.forEach() //doesn't return the row #, if you "companies.index(of:" then you gotta unwrap optional
-            
             for (index, _ ) in companies.enumerated() {
                 let indexPath = IndexPath(row: index, section: 0)
                 indexPathsToRemove.append(indexPath)
             }
-            
             companies.removeAll()
             tableView.deleteRows(at: indexPathsToRemove, with: .fade)
-            
-//            companies.removeAll()  //<-- remove all entries from arry
-//            tableView.reloadData()
+            //            companies.removeAll()  //<-- remove all entries from arry
+            //            tableView.reloadData()
         } catch let delErr{
             print("Failed to delete objects from Core Data: ", delErr)
         }
@@ -99,14 +85,6 @@ class CompaniesController: UITableViewController, CreateCompanyControllerDelegat
         let navController = CustomNavigationController(rootViewController: createCompanyController)
         createCompanyController.delegate = self
         present(navController, animated: true, completion: nil)
-    }
-    
-    func setupNavigationStyle() {
-        navigationController?.navigationBar.isTranslucent = false
-        navigationController?.navigationBar.barTintColor = UIColor.lightRed
-        navigationController?.navigationBar.prefersLargeTitles = true
-        navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedStringKey.foregroundColor : UIColor.white]
-        navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor : UIColor.white]
     }
     
     override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
@@ -132,11 +110,9 @@ class CompaniesController: UITableViewController, CreateCompanyControllerDelegat
         cell.backgroundColor = UIColor.teal
         let company = companies[indexPath.row]
         if let name = company.name, let founded = company.founded {
-            
             // One way to show date
             //            let locale = Locale(identifier: "EN")
             //            let dateString = "\(name) - Founded: \(founded.description(with: locale))"
-            
             //MMM dd, YYYY
             let dateFormatter = DateFormatter()
             //            dateFormatter.dateFormat = "MMM dd, yyyy hh:mm:ss" // <-- Will show hour, minute, seconds also
@@ -147,18 +123,13 @@ class CompaniesController: UITableViewController, CreateCompanyControllerDelegat
         } else {
             cell.textLabel?.text = company.name
         }
-        
         //        cell.textLabel?.text = "\(company.name) - Founded: \(company.founded)"
         cell.textLabel?.textColor = UIColor.white
         cell.textLabel?.font = UIFont.boldSystemFont(ofSize: 16)
-        
-        
         cell.imageView?.image = #imageLiteral(resourceName: "select_photo_empty")
-        
         if let imageData = company.imageData {
             cell.imageView?.image = UIImage(data: imageData)
         }
-        
         return cell
     }
     
@@ -186,7 +157,6 @@ class CompaniesController: UITableViewController, CreateCompanyControllerDelegat
                 print("Failed to delete company: ", saveErr)
             }
         }
-        
         let editAction = UITableViewRowAction(style: .normal, title: "Edit", handler: editHandlerFunction)
         print("Editing company: ")
         return [deleteAction, editAction]
@@ -194,7 +164,6 @@ class CompaniesController: UITableViewController, CreateCompanyControllerDelegat
     
     private func editHandlerFunction(action: UITableViewRowAction, indexPath: IndexPath) {
         print("Editing company in separate function")
-        
         let editCompanyController = CreateCompanyController()
         editCompanyController.delegate = self   //<--- missing that line has caused me LOTS LOTS LOTS of pain
         // (os/kern) invalid capability (0x14) "Unable to insert COPY_SEND"
@@ -202,7 +171,6 @@ class CompaniesController: UITableViewController, CreateCompanyControllerDelegat
         //Below is changing values in the VC before it loads.  So although we're calling 'CreateCompanyController'
         //it still looks customized for the current situation
         editCompanyController.company = companies[indexPath.row]
-        
         let navController = CustomNavigationController(rootViewController: editCompanyController)
         present(navController, animated: true, completion: nil)
     }

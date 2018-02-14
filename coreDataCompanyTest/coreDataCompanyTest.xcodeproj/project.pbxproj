@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		84536814202DB84100996593 /* UIColor+theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84536813202DB84100996593 /* UIColor+theme.swift */; };
-		84536816202E472A00996593 /* Company.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84536815202E472A00996593 /* Company.swift */; };
 		84602943202EF4FA00B02D77 /* CreateCompanyController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84602942202EF4FA00B02D77 /* CreateCompanyController.swift */; };
 		84AD075E202D4632007A1AC9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84AD075D202D4632007A1AC9 /* AppDelegate.swift */; };
 		84AD0760202D4632007A1AC9 /* CompaniesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84AD075F202D4632007A1AC9 /* CompaniesController.swift */; };
@@ -20,7 +19,6 @@
 
 /* Begin PBXFileReference section */
 		84536813202DB84100996593 /* UIColor+theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+theme.swift"; sourceTree = "<group>"; };
-		84536815202E472A00996593 /* Company.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Company.swift; sourceTree = "<group>"; };
 		84602942202EF4FA00B02D77 /* CreateCompanyController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateCompanyController.swift; sourceTree = "<group>"; };
 		84AD075A202D4632007A1AC9 /* coreDataCompanyTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = coreDataCompanyTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		84AD075D202D4632007A1AC9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -69,7 +67,6 @@
 				84AD0766202D4632007A1AC9 /* LaunchScreen.storyboard */,
 				84AD0769202D4632007A1AC9 /* Info.plist */,
 				84536813202DB84100996593 /* UIColor+theme.swift */,
-				84536815202E472A00996593 /* Company.swift */,
 				84BD762D20309B6D00E09285 /* IntermediateTrainingModel.xcdatamodeld */,
 				84FA400F2030CC3C0076406B /* CoreDataManager.swift */,
 			);
@@ -153,7 +150,6 @@
 				84602943202EF4FA00B02D77 /* CreateCompanyController.swift in Sources */,
 				84AD075E202D4632007A1AC9 /* AppDelegate.swift in Sources */,
 				84FA40102030CC3C0076406B /* CoreDataManager.swift in Sources */,
-				84536816202E472A00996593 /* Company.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

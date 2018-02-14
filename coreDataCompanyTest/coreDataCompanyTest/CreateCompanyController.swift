@@ -17,19 +17,16 @@ protocol CreateCompanyControllerDelegate {
 
 
 class CreateCompanyController: UIViewController, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
-    
     var company: Company? {  //Without this line, 'editCompanyController.company = companies[indexPath.row]' errors out
         // keeps track of which company we are trying to edit
         //'ViewWillAppear' to determine Navigation Title in ternary operator
         //'handleAddCompany' created 'CreateCompanyController' but doesn't define 'Company?'
         didSet {
             nameTextField.text = company?.name
-            
             if let imageData = company?.imageData {
                 companyImageView.image = UIImage(data: imageData)
                 setupCircularStyle()
             }
-            
             guard let founded = company?.founded else {return}
             datePicker.date = founded
         }
@@ -63,9 +60,7 @@ class CreateCompanyController: UIViewController, UINavigationControllerDelegate,
         } else if let originalImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
             companyImageView.image = originalImage //if user does nothing after selecting photo
         }
-        
         setupCircularStyle()
-        
         dismiss(animated: true, completion: nil)
     }
     
@@ -104,7 +99,6 @@ class CreateCompanyController: UIViewController, UINavigationControllerDelegate,
     }
     
     @objc private func handleSave(){
-        
         if company == nil {
             createCompany()
         } else {
@@ -117,14 +111,11 @@ class CreateCompanyController: UIViewController, UINavigationControllerDelegate,
         let context = CoreDataManager.shared.persistentContainer.viewContext
         company?.name = nameTextField.text //company = 'Company type' -> coreData object.  Edit here then 'context.save()' below
         company?.founded = datePicker.date
-        
         if let companyImage = companyImageView.image {
             let imageData = UIImageJPEGRepresentation(companyImage, 0.8)
 //            company?.setValue(imageData, forKey: "imageData")
             company?.imageData = imageData  // you don't need line above.   Like in Create Company.  Because it already exists.
-            
         }
-        
         do {
             try context.save()
             dismiss(animated: true, completion: {
@@ -142,12 +133,10 @@ class CreateCompanyController: UIViewController, UINavigationControllerDelegate,
         let company = NSEntityDescription.insertNewObject(forEntityName: "Company", into: context)
         company.setValue(nameTextField.text, forKey: "name")  //set is needed for creating value
         company.setValue(datePicker.date, forKey: "founded")  //after it exists, you can access it as a regular property
-        
         if let companyImage = companyImageView.image {
             let imageData = UIImageJPEGRepresentation(companyImage, 0.8)
             company.setValue(imageData, forKey: "imageData")
         }
-        
         do {
             try context.save()  //<--- That's the actual save
             dismiss(animated: true, completion: {
