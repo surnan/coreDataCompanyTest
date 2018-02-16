@@ -92,7 +92,8 @@ class CreateCompanyController: UIViewController, UINavigationControllerDelegate,
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(handleCancel))
+        setupCancelButton()
+        
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", style: .plain, target: self, action: #selector(handleSave))
         view.backgroundColor = UIColor.darkBlue
         setupUI()
@@ -154,10 +155,6 @@ class CreateCompanyController: UIViewController, UINavigationControllerDelegate,
         //Two lines below for border width
         companyImageView.layer.borderColor = UIColor.darkBlue.cgColor
         companyImageView.layer.borderWidth = 2
-    }
-    
-    @objc private func handleCancel() {
-        dismiss(animated: true, completion: nil)
     }
     
     private func setupUI(){

@@ -13,7 +13,6 @@ class CompanyCell: UITableViewCell {
     var company: Company? {  //triggered from 'cellForRowAt' cell.company=company
         didSet {
             print(company?.name)
-            
             if let imageData = company?.imageData {
                 companyImageView.image = UIImage(data: imageData)
             }
@@ -33,7 +32,6 @@ class CompanyCell: UITableViewCell {
             } else {
                 nameFoundedDateLabel.text = company?.name
             }
-            
         }
     }
     
@@ -61,9 +59,7 @@ class CompanyCell: UITableViewCell {
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
         backgroundColor = UIColor.teal
-        
         addSubview(companyImageView)
         companyImageView.heightAnchor.constraint(equalToConstant: 40).isActive = true
         companyImageView.widthAnchor.constraint(equalToConstant: 40).isActive = true
