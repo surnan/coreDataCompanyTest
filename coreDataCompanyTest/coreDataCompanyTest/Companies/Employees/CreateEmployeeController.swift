@@ -8,7 +8,13 @@
 
 import UIKit
 
+protocol CreateEmployeeControllerDelegate {
+    func didAddEmployee(employee: Employee)
+}
+
 class CreateEmployeeController: UIViewController {
+    
+    var delegate: CreateEmployeeControllerDelegate?
     
     let nameLabel: UILabel = {
         let label = UILabel()
@@ -39,13 +45,23 @@ class CreateEmployeeController: UIViewController {
     @objc func handleSave(){
         print("Saving Employee")
         guard let employeeName = nameTextField.text else {return}
-        let error = CoreDataManager.shared.createEmployee(employeeName: employeeName)
+        let tuple = CoreDataManager.shared.createEmployee(employeeName: employeeName)
         
-        if let error = error {
+        
+        
+        if let error = tuple.1 {
             //perhaps a UIAlert controller to show your message?
             print(error)
         } else {
-        dismiss(animated: true, completion: nil)
+//        dismiss(animated: true, completion: nil)
+//
+
+            dismiss(animated: true, completion: {
+                self.delegate?.didAddEmployee(employee: tuple.0!)
+            })
+            
+            
+            
         }
     }
     
