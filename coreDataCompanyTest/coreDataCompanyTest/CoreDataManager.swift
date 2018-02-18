@@ -45,7 +45,17 @@ struct CoreDataManager {
         let context = persistentContainer.viewContext
         
         let employee = NSEntityDescription.insertNewObject(forEntityName: "Employee", into: context)  as! Employee
+        
         employee.setValue(employeeName, forKey: "name")
+        
+        let  employeeInformation = NSEntityDescription.insertNewObject(forEntityName: "EmployeeInformation", into: context) as! EmployeeInformation
+        
+//        employeeInformation.setValue("456", forKey: "taxId")  //legal but two variables to maintain for future updates
+        employeeInformation.taxId = "456" //preferred syntax.  So if coreData propery name changes, you see error on the code compile
+        
+        employee.employeeInformation = employeeInformation
+        
+        
         
         do {
             try context.save()

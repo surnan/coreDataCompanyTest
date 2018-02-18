@@ -66,7 +66,11 @@ class EmployeesController: UITableViewController, CreateEmployeeControllerDelega
         let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath)
         
         let employee = employees[indexPath.row]
-        cell.textLabel?.text = employee.name; print("EMPLOYEE NAME = \(employee.name ?? "")")
+        
+        if let taxId = employee.employeeInformation?.taxId {
+            cell.textLabel?.text = "\(employee.name ?? "")    \(taxId)"
+        }
+        
         cell.textLabel?.textColor = UIColor.white
         cell.backgroundColor = UIColor.teal
         cell.textLabel?.font = UIFont.boldSystemFont(ofSize: 15)
