@@ -14,6 +14,7 @@ protocol CreateEmployeeControllerDelegate {
 
 class CreateEmployeeController: UIViewController {
     
+    var company: Company?
     var delegate: CreateEmployeeControllerDelegate?
     
     let nameLabel: UILabel = {
@@ -37,31 +38,22 @@ class CreateEmployeeController: UIViewController {
         setupCancelButton()
         _ = setupLightBlueBackgroundView(height: 50)
         setupUI()
-        
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", style: .plain, target: self, action: #selector(handleSave))
     }
     
     
-    @objc func handleSave(){
+    @objc private func handleSave(){
         print("Saving Employee")
         guard let employeeName = nameTextField.text else {return}
-        let tuple = CoreDataManager.shared.createEmployee(employeeName: employeeName)
-        
-        
-        
+        guard let company = company else {return}
+        let tuple = CoreDataManager.shared.createEmployee(employeeName: employeeName, company: company)
         if let error = tuple.1 {
             //perhaps a UIAlert controller to show your message?
             print(error)
         } else {
-//        dismiss(animated: true, completion: nil)
-//
-
             dismiss(animated: true, completion: {
                 self.delegate?.didAddEmployee(employee: tuple.0!)
             })
-            
-            
-            
         }
     }
     
@@ -77,6 +69,5 @@ class CreateEmployeeController: UIViewController {
         nameTextField.leftAnchor.constraint(equalTo: nameLabel.rightAnchor).isActive = true
         nameTextField.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         nameTextField.bottomAnchor.constraint(equalTo: nameLabel.bottomAnchor).isActive = true
-        
     }
 }

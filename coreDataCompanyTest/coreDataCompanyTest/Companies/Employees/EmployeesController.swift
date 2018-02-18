@@ -33,17 +33,21 @@ class EmployeesController: UITableViewController, CreateEmployeeControllerDelega
     }
     
     private func fetchEmployees(){
-        print("Trying to Fetch employees")
-        let context = CoreDataManager.shared.persistentContainer.viewContext
-        let request = NSFetchRequest<Employee>(entityName: "Employee")  //Typing <Employee> makes it return an array of Employee
-        do {
-            let employees = try context.fetch(request)
-            self.employees = employees
-            
-//            employees.forEach{print("Employee name: ", $0.name ?? "")}
-            } catch let err {
-                print("Failed to fetch employees: ", err)
-            }
+        
+        guard let companyEmployees = company?.employees?.allObjects as? [Employee] else { return }
+        self.employees = companyEmployees
+        
+//        print("Trying to Fetch employees")
+//        let context = CoreDataManager.shared.persistentContainer.viewContext
+//        let request = NSFetchRequest<Employee>(entityName: "Employee")  //Typing <Employee> makes it return an array of Employee
+//        do {
+//            let employees = try context.fetch(request)
+//            self.employees = employees
+//
+////            employees.forEach{print("Employee name: ", $0.name ?? "")}
+//            } catch let err {
+//                print("Failed to fetch employees: ", err)
+//            }
         }
     
     @objc func handleAdd(){
@@ -51,6 +55,8 @@ class EmployeesController: UITableViewController, CreateEmployeeControllerDelega
         let createEmployeeController = CreateEmployeeController()
         
         createEmployeeController.delegate = self
+        createEmployeeController.company = self.company
+        
         let navController = UINavigationController(rootViewController: createEmployeeController)
         present(navController, animated: true, completion: nil)
     }
@@ -67,8 +73,12 @@ class EmployeesController: UITableViewController, CreateEmployeeControllerDelega
         
         let employee = employees[indexPath.row]
         
+        
+        
         if let taxId = employee.employeeInformation?.taxId {
             cell.textLabel?.text = "\(employee.name ?? "")    \(taxId)"
+        } else {
+            cell.textLabel?.text = "\(employee.name ?? "")"
         }
         
         cell.textLabel?.textColor = UIColor.white
