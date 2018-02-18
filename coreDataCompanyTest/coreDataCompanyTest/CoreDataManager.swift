@@ -41,7 +41,7 @@ struct CoreDataManager {
     }
     
     
-    func createEmployee(employeeName: String, company: Company) -> (Employee?, Error?) {
+    func createEmployee(employeeName: String, birthday: Date, company: Company) -> (Employee?, Error?) {
         let context = persistentContainer.viewContext
         
         let employee = NSEntityDescription.insertNewObject(forEntityName: "Employee", into: context)  as! Employee
@@ -53,6 +53,7 @@ struct CoreDataManager {
         
 //        employeeInformation.setValue("456", forKey: "taxId")  //legal but two variables to maintain for future updates
         employeeInformation.taxId = "456" //preferred syntax.  So if coreData propery name changes, you see error on the code compile
+        employeeInformation.birthday = birthday
         
         employee.employeeInformation = employeeInformation
         

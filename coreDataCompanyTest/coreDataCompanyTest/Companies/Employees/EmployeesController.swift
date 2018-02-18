@@ -36,19 +36,7 @@ class EmployeesController: UITableViewController, CreateEmployeeControllerDelega
         
         guard let companyEmployees = company?.employees?.allObjects as? [Employee] else { return }
         self.employees = companyEmployees
-        
-//        print("Trying to Fetch employees")
-//        let context = CoreDataManager.shared.persistentContainer.viewContext
-//        let request = NSFetchRequest<Employee>(entityName: "Employee")  //Typing <Employee> makes it return an array of Employee
-//        do {
-//            let employees = try context.fetch(request)
-//            self.employees = employees
-//
-////            employees.forEach{print("Employee name: ", $0.name ?? "")}
-//            } catch let err {
-//                print("Failed to fetch employees: ", err)
-//            }
-        }
+    }
     
     @objc func handleAdd(){
         print("Trying to add an employee")
@@ -72,13 +60,17 @@ class EmployeesController: UITableViewController, CreateEmployeeControllerDelega
         let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath)
         
         let employee = employees[indexPath.row]
-        
-        
-        
         if let taxId = employee.employeeInformation?.taxId {
             cell.textLabel?.text = "\(employee.name ?? "")    \(taxId)"
         } else {
             cell.textLabel?.text = "\(employee.name ?? "")"
+        }
+        
+        
+        if let birthday = employee.employeeInformation?.birthday {
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "MMM dd, yyyy"
+            cell.textLabel?.text = "\(employee.name ?? "")    \(dateFormatter.string(from: birthday))"
         }
         
         cell.textLabel?.textColor = UIColor.white
