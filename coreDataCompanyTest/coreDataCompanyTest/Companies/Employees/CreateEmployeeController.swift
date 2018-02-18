@@ -62,7 +62,7 @@ class CreateEmployeeController: UIViewController {
         guard let company = company else {return}
         guard let birthDayText = birthdayTextField.text else { return }
         
-        if birthDayText.isEmpty {
+        if (nameTextField.text?.isEmpty)! {
             showError(title: "Invalid Name", message: "Please enter value for name")
             return  //you don't want to run the rest of this code and create an employee
         }
@@ -72,7 +72,7 @@ class CreateEmployeeController: UIViewController {
         
         guard let birthdayDate = dateFormatter.date(from: birthDayText)
             else {
-                showError(title: "Invalid Date", message: "Please enter date in the following format: MMM/dd/yyyy")
+                showError(title: "Invalid Date", message: "Please enter date in the following format: MM/dd/yyyy")
                 return
         }
 
