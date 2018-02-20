@@ -46,34 +46,75 @@ class EmployeesController: UITableViewController, CreateEmployeeControllerDelega
     var longNameEmployees = [Employee]()
     var reallyLongNameEmployees = [Employee]()
 
-    private func fetchEmployees(){
+//    private func fetchEmployees(){
+//        guard let companyEmployees = company?.employees?.allObjects as? [Employee] else { return }
+////        self.employees = companyEmployees
+//        shortNameEmployees = companyEmployees.filter({ (employee) -> Bool in
+//            if let count = employee.name?.count {
+//                return count <= 5
+//            } else {
+//                return false
+//            }
+//        })
+//
+//        longNameEmployees = companyEmployees.filter({ (employee) -> Bool in
+//            if let count = employee.name?.count {
+//                return count > 5  && count < 7
+//            } else {
+//                return false
+//            }
+//        })
+//
+//        longNameEmployees = companyEmployees.filter({ (employee) -> Bool in
+//            if let count = employee.name?.count {
+//                return count >= 7
+//            } else {
+//                return false
+//            }
+//        })
+//        allEmployees = [shortNameEmployees,longNameEmployees, reallyLongNameEmployees]
+//        print(("short = \(shortNameEmployees.count) ..... long = \(longNameEmployees.count)  ...... reallyLong =\(reallyLongNameEmployees)"))
+//    }
+    
+    
+    private func fetchEmployees() {
         guard let companyEmployees = company?.employees?.allObjects as? [Employee] else { return }
-//        self.employees = companyEmployees
+        
+                print("ABOUT TO EXECUTE shortNAME LOOP")
         shortNameEmployees = companyEmployees.filter({ (employee) -> Bool in
             if let count = employee.name?.count {
                 return count <= 5
-            } else {
-                return false
             }
+            return false
         })
         
+        print("ABOUT TO EXECUTE LONGNAME LOOP")
         longNameEmployees = companyEmployees.filter({ (employee) -> Bool in
             if let count = employee.name?.count {
-                return count > 5  && count < 7
-            } else {
-                return false
+                return count > 5 && count < 7
             }
+            return false
+        })
+
+                print("ABOUT TO EXECUTE reallyLONGNAME LOOP")
+        reallyLongNameEmployees = companyEmployees.filter({ (employee) -> Bool in
+            if let count = employee.name?.count {
+                return count >= 8
+            }
+            return false
         })
         
-        longNameEmployees = companyEmployees.filter({ (employee) -> Bool in
-            if let count = employee.name?.count {
-                return count >= 7
-            } else {
-                return false
-            }
-        })
-        allEmployees = [shortNameEmployees,longNameEmployees, reallyLongNameEmployees]
+        allEmployees = [
+            shortNameEmployees,
+            longNameEmployees,
+            reallyLongNameEmployees
+        ]
+        
+        print(shortNameEmployees.count, longNameEmployees.count, reallyLongNameEmployees.count)
+        
+        //        self.employees = companyEmployees
     }
+    
     
     var allEmployees = [[Employee]]()
     
