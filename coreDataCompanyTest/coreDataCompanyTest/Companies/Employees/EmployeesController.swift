@@ -20,17 +20,19 @@ class IndentedLabel: UILabel{
 
 class EmployeesController: UITableViewController, CreateEmployeeControllerDelegate {
     
-    
+    //This is called when we dismiss employee creation
     func didAddEmployee(employee: Employee) {   //  Without this protocol, the delagate to "self" fails
                                                 //  'createEmployeeController.delegate = self'
                                                 //  defined within 'createEmployeeController
-        employees.append(employee)
+//        employees.append(employee)
+        fetchEmployees()  //where we define the arrays for each section
+        
         tableView.reloadData()
     }
     
     var company: Company?
     
-    var employees = [Employee]()
+//    var employees = [Employee]()
     let cellID = "cellllllllllllllll"
 
     override func viewDidLoad(){
@@ -42,77 +44,18 @@ class EmployeesController: UITableViewController, CreateEmployeeControllerDelega
     }
     
     
-    var shortNameEmployees = [Employee]()
-    var longNameEmployees = [Employee]()
-    var reallyLongNameEmployees = [Employee]()
-
-//    private func fetchEmployees(){
-//        guard let companyEmployees = company?.employees?.allObjects as? [Employee] else { return }
-////        self.employees = companyEmployees
-//        shortNameEmployees = companyEmployees.filter({ (employee) -> Bool in
-//            if let count = employee.name?.count {
-//                return count <= 5
-//            } else {
-//                return false
-//            }
-//        })
-//
-//        longNameEmployees = companyEmployees.filter({ (employee) -> Bool in
-//            if let count = employee.name?.count {
-//                return count > 5  && count < 7
-//            } else {
-//                return false
-//            }
-//        })
-//
-//        longNameEmployees = companyEmployees.filter({ (employee) -> Bool in
-//            if let count = employee.name?.count {
-//                return count >= 7
-//            } else {
-//                return false
-//            }
-//        })
-//        allEmployees = [shortNameEmployees,longNameEmployees, reallyLongNameEmployees]
-//        print(("short = \(shortNameEmployees.count) ..... long = \(longNameEmployees.count)  ...... reallyLong =\(reallyLongNameEmployees)"))
-//    }
-    
-    
     private func fetchEmployees() {
         guard let companyEmployees = company?.employees?.allObjects as? [Employee] else { return }
         
-                print("ABOUT TO EXECUTE shortNAME LOOP")
-        shortNameEmployees = companyEmployees.filter({ (employee) -> Bool in
-            if let count = employee.name?.count {
-                return count <= 5
-            }
-            return false
-        })
+        let executives = companyEmployees.filter { (employee) -> Bool in
+            return employee.type == "Executive"
+        }
         
-        print("ABOUT TO EXECUTE LONGNAME LOOP")
-        longNameEmployees = companyEmployees.filter({ (employee) -> Bool in
-            if let count = employee.name?.count {
-                return count > 5 && count < 7
-            }
-            return false
-        })
+        let seniorManagement = companyEmployees.filter { $0.type == "Senior Management"}
 
-                print("ABOUT TO EXECUTE reallyLONGNAME LOOP")
-        reallyLongNameEmployees = companyEmployees.filter({ (employee) -> Bool in
-            if let count = employee.name?.count {
-                return count >= 8
-            }
-            return false
-        })
+        allEmployees = [executives, seniorManagement, companyEmployees.filter {$0.type == "Staff"} ]
         
-        allEmployees = [
-            shortNameEmployees,
-            longNameEmployees,
-            reallyLongNameEmployees
-        ]
-        
-        print(shortNameEmployees.count, longNameEmployees.count, reallyLongNameEmployees.count)
-        
-        //        self.employees = companyEmployees
+  
     }
     
     
@@ -139,11 +82,11 @@ class EmployeesController: UITableViewController, CreateEmployeeControllerDelega
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let label = IndentedLabel()
         if section == 0 {
-            label.text = "Short Names"
+            label.text = "Executive"
         } else if section == 1{
-            label.text = "Long Names"
+            label.text = "Senior Management"
         } else {
-            label.text = "REALY long long names"
+            label.text = "Staff"
         }
         label.backgroundColor = UIColor.lightBlue
         label.textColor = UIColor.darkBlue
