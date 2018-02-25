@@ -102,7 +102,14 @@ class CreateEmployeeController: UIViewController {
     
     
     let employeeTypeSegmentedControl: UISegmentedControl = {
-        let types = ["Executive", "Senior Management", "Staff"]
+
+        //Without the "rawvalues", swift will still be reading them as Int.  Even through their defined as ':String'
+        let types = [EmployeeType.Executive.rawValue,
+                     EmployeeType.SeniorManagement.rawValue,
+                     EmployeeType.Staff.rawValue,
+                     EmployeeType.Intern.rawValue]
+
+        
         let sc = UISegmentedControl(items: types)
         sc.selectedSegmentIndex = 0
         sc.translatesAutoresizingMaskIntoConstraints = false

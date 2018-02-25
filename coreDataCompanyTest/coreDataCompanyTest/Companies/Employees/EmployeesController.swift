@@ -24,15 +24,22 @@ class EmployeesController: UITableViewController, CreateEmployeeControllerDelega
     func didAddEmployee(employee: Employee) {   //  Without this protocol, the delagate to "self" fails
                                                 //  'createEmployeeController.delegate = self'
                                                 //  defined within 'createEmployeeController
-//        employees.append(employee)
-        fetchEmployees()  //where we define the arrays for each section
         
-        tableView.reloadData()
+//        fetchEmployees()  //where we define the arrays for each section
+//        tableView.reloadData() //<-- don't need to reload data since we're inserting it instead
+                                //All the code below is new
+        
+        guard let section = employeeTypes.index(of: employee.type!) else { return }
+        let row = allEmployees[section].count
+        
+        let insertionIndexPath = IndexPath(row: row, section: section)
+        allEmployees[section].append(employee)
+        tableView.insertRows(at: [insertionIndexPath], with: .right)
+        
     }
     
     var company: Company?
-    
-//    var employees = [Employee]()
+
     let cellID = "cellllllllllllllll"
 
     override func viewDidLoad(){
@@ -44,22 +51,36 @@ class EmployeesController: UITableViewController, CreateEmployeeControllerDelega
     }
     
     
+    var employeeTypes = [EmployeeType.Executive.rawValue,
+                         EmployeeType.SeniorManagement.rawValue,
+                         EmployeeType.Staff.rawValue,
+                         EmployeeType.Intern.rawValue]
+    
+    
+
     private func fetchEmployees() {
+        
+        allEmployees = []  //prevents you from index out of bounds on the append from employeeTypes.append
         guard let companyEmployees = company?.employees?.allObjects as? [Employee] else { return }
         
-        let executives = companyEmployees.filter { (employee) -> Bool in
-            return employee.type == "Executive"
-        }
         
-        let seniorManagement = companyEmployees.filter { $0.type == "Senior Management"}
-
-        allEmployees = [executives, seniorManagement, companyEmployees.filter {$0.type == "Staff"} ]
         
-  
+        employeeTypes.forEach { (employeeType) in
+            allEmployees.append(companyEmployees.filter { $0.type == employeeType})  //Very slick
+        
+        
+//        let executives = companyEmployees.filter { (employee) -> Bool in
+//            return employee.type == EmployeeType.Executive.rawValue
+//        }
+//        let seniorManagement = companyEmployees.filter { $0.type == EmployeeType.SeniorManagement.rawValue}
+//        allEmployees = [executives, seniorManagement, companyEmployees.filter {$0.type == EmployeeType.Staff.rawValue} ]
+    }
     }
     
     
     var allEmployees = [[Employee]]()
+    
+
     
     @objc func handleAdd(){
         print("Trying to add an employee")
@@ -81,13 +102,17 @@ class EmployeesController: UITableViewController, CreateEmployeeControllerDelega
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let label = IndentedLabel()
-        if section == 0 {
-            label.text = "Executive"
-        } else if section == 1{
-            label.text = "Senior Management"
-        } else {
-            label.text = "Staff"
-        }
+//        if section == 0 {
+//            label.text = EmployeeType.Executive.rawValue
+//        } else if section == 1{
+//            label.text = EmployeeType.SeniorManagement.rawValue
+//        } else {
+//            label.text = EmployeeType.Staff.rawValue
+//        }
+//
+        label.text = employeeTypes[section]
+        
+        
         label.backgroundColor = UIColor.lightBlue
         label.textColor = UIColor.darkBlue
         label.font = UIFont.boldSystemFont(ofSize: 16)
