@@ -22,13 +22,22 @@ class CompaniesController: UITableViewController {
         //Preferred way to do background tasks with CoreData with line below
         //With the line below, we don't need to use DispatchQueue methods
         CoreDataManager.shared.persistentContainer.performBackgroundTask({ (backgroundContext) in
-            (0...20000).forEach { (value) in
+            (0...5).forEach { (value) in
                 print(value)
                 let company = Company(context: backgroundContext)
                 company.name = String(value)
             }
+            
+            
             do {
                 try backgroundContext.save() //if you execute save too many times, you will crash.
+                
+                DispatchQueue.main.async {
+                    self.companies = CoreDataManager.shared.fetchCompanies()
+                    self.tableView.reloadData()
+                }
+                
+                
             } catch let err {       //so this should be outside the .forEach loop above
                 print("Failed to save: ", err)
             }
@@ -75,6 +84,42 @@ class CompaniesController: UITableViewController {
     */
     }
     
+    
+    @objc func doUpdates(){
+        print("trying to update companies on a background context")
+        CoreDataManager.shared.persistentContainer.performBackgroundTask { (backgroundContext) in
+            //because we're in the background thread, we want to execute a new fetch.  Don't wanna go into main thread to gather this data where it's already been loaded
+            
+            let request: NSFetchRequest<Company> = Company.fetchRequest()
+            
+            do {
+                let companies = try backgroundContext.fetch(request)
+                companies.forEach({ (company) in
+                    print(company.name ?? "")
+                    company.name = "C: \(company.name ?? "")"
+                })
+                
+                do {
+                    try backgroundContext.save()
+                    
+                    DispatchQueue.main.async {
+                        CoreDataManager.shared.persistentContainer.viewContext.reset() //although it works with helping you show the new changes
+                                                        //You are throwing away al previous fetch requests.  So this can be expensive when
+                                                        // you re-run the same fetch once more
+                        self.companies = CoreDataManager.shared.fetchCompanies()
+                        self.tableView.reloadData()
+                    }
+                    
+                } catch let saveErr {
+                    print("Failed to save on background:", saveErr)
+                }
+            } catch let err {
+                print("Failed to fetch companies on background: ", err)
+            }
+            
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.companies = CoreDataManager.shared.fetchCompanies()  //normally, you should reload tableView when fetching companies
@@ -84,7 +129,8 @@ class CompaniesController: UITableViewController {
         
         navigationItem.leftBarButtonItems = [
             UIBarButtonItem(title: "Reset", style: .plain, target: self, action: #selector(handleReset)),
-            UIBarButtonItem(title: "Do Work", style: .plain, target: self, action: #selector(doWork))
+             UIBarButtonItem(title: "Work", style: .plain, target: self, action: #selector(doWork)),
+            UIBarButtonItem(title: "Do Updates", style: .plain, target: self, action: #selector(doUpdates))
         ]
         
         
