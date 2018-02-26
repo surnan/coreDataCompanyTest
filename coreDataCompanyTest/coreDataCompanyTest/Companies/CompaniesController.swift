@@ -85,6 +85,7 @@ class CompaniesController: UITableViewController {
     }
     
     
+    
     @objc func doUpdates(){
         print("trying to update companies on a background context")
         CoreDataManager.shared.persistentContainer.performBackgroundTask { (backgroundContext) in
