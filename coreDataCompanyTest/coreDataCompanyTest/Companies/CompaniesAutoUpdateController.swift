@@ -86,11 +86,19 @@ class CompaniesAutoUpdateController: UITableViewController, NSFetchedResultsCont
         })
         
        
-        Service.shared.downloadCompaniesFromServer()
+//        Service.shared.downloadCompaniesFromServer()
         
+        //This controller is AWESOME!!
+        let refreshControl = UIRefreshControl()
+        refreshControl.tintColor = UIColor.white
+        refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
+        self.refreshControl = refreshControl
     }
     
-   
+    @objc func handleRefresh(){
+        Service.shared.downloadCompaniesFromServer()
+        self.refreshControl?.endRefreshing()  //without this line, dragging down second time doesn't make it pull companies a second time.
+    }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
         return fetchedResultsController.sections?.count ?? 0
@@ -174,7 +182,13 @@ class CompaniesAutoUpdateController: UITableViewController, NSFetchedResultsCont
         return sectionName   //#2
     }
     
-    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        let employeesListController = EmployeesController()
+        employeesListController.company = fetchedResultsController.object(at: indexPath)
+        
+        navigationController?.pushViewController(employeesListController, animated: true)
+    }
     
 }
 
