@@ -52,7 +52,8 @@ class CompaniesAutoUpdateController: UITableViewController, NSFetchedResultsCont
         
         let request: NSFetchRequest<Company> = Company.fetchRequest()
         
-        request.predicate = NSPredicate(format: "name contains %@", "B")
+//        request.predicate = NSPredicate(format: "name contains %@", "B")  //when commented out, EVERYTHING fetched is selected for delete
+        //not selective before action
         
         let context = CoreDataManager.shared.persistentContainer.viewContext
         let companiesWithB = try? context.fetch(request)
@@ -83,6 +84,10 @@ class CompaniesAutoUpdateController: UITableViewController, NSFetchedResultsCont
             print("===================")
             print(company.name ?? "")
         })
+        
+       
+        Service.shared.downloadCompaniesFromServer()
+        
     }
     
    
